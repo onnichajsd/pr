@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Device Scanner</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      background-color: #4f46e5;
+      color: white;
+      padding: 1rem 2rem;
+      width: 100%;
+      text-align: center;
+      font-size: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    main {
+      max-width: 800px;
+      width: 90%;
+      margin-top: 40px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4f46e5;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #4338ca;
+    }
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .loading {
+      margin-top: 20px;
+      font-style: italic;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    🔍 IoT Device Scanner Dashboard
+  </header>
+  <main>
+    <p>Click the button below to scan devices in your local network:</p>
+    <button onclick="scanDevices()">Scan Devices</button>
+    <p class="loading" id="loading" style="display:none;">Scanning... Please wait.</p>
+    
+    <table id="result" style="display:none;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>IP Address</th>
+          <th>MAC Address</th>
+        </tr>
+      </thead>
+      <tbody id="result-body"></tbody>
+    </table>
+  </main>
+
+  <script>
+    function scanDevices() {
+      const loading = document.getElementById("loading");
+      const table = document.getElementById("result");
+      const tbody = document.getElementById("result-body");
+
+      loading.style.display = "block";
+      table.style.display = "none";
+      tbody.innerHTML = "";
+
+      fetch("http://192.168.1.101:5000/scan") // 🔁 เปลี่ยน IP ให้ตรงกับ EC2 หรือ Flask ของน้ำ
+        .then(res => res.json())
+        .then(data => {
+          loading.style.display = "none";
+          if (data.length === 0) {
+            alert("No devices found.");
+            return;
+          }
+          data.forEach((device, i) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${i + 1}</td>
+              <td>${device.ip}</td>
+              <td>${device.mac}</td>
+            `;
+            tbody.appendChild(row);
+          });
+          table.style.display = "table";
+        })
+        .catch(err => {
+          loading.style.display = "none";
+          alert("Scan failed: " + err);
+        });
+    }
+  </script>
+</body>
+</html>
