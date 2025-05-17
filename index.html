@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>IoT Device Scanner</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { padding: 10px 20px; font-size: 16px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>IoT Device Scanner</h1>
+  <button onclick="scan()">🔍 Scan Devices</button>
+
+  <table id="result" style="display:none;">
+    <thead>
+      <tr><th>#</th><th>IP</th><th>MAC</th></tr>
+    </thead>
+    <tbody id="result-body"></tbody>
+  </table>
+
+  <script>
+    function scan() {
+      fetch("http://192.168.1.101:5000/scan") // 👈 เปลี่ยน IP ตรงนี้
+        .then(res => res.json())
+        .then(data => {
+          const table = document.getElementById('result');
+          const body = document.getElementById('result-body');
+          body.innerHTML = '';
+          data.forEach((device, i) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${i + 1}</td><td>${device.ip}</td><td>${device.mac}</td>`;
+            body.appendChild(row);
+          });
+          table.style.display = data.length ? 'table' : 'none';
+        })
+        .catch(err => alert("Scan failed: " + err));
+    }
+  </script>
+</body>
+</html>
