@@ -101,7 +101,7 @@
       table.style.display = "none";
       tbody.innerHTML = "";
 
-      fetch("http://192.168.1.101:5000/scan") // 🔁 เปลี่ยน IP ให้ตรงกับ EC2 หรือ Flask ของน้ำ
+      fetch("http://44.207.6.66:5000/scan") // 🔁 เปลี่ยน IP ให้ตรงกับ EC2 หรือ Flask ของน้ำ
         .then(res => res.json())
         .then(data => {
           loading.style.display = "none";
