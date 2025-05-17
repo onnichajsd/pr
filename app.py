@@ -16,6 +16,10 @@ def scan(ip_range="192.168.1.1/24"):
         devices.append({"ip": received.psrc, "mac": received.hwsrc})
     return devices
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 @app.route("/scan")
 def scan_devices():
     devices = scan()
