@@ -24,7 +24,7 @@
 
   <script>
     function scan() {
-      fetch("http://192.168.1.101:5000/scan") // 👈 เปลี่ยน IP ตรงนี้
+      fetch("http://192.168.1.101:5000") // 👈 เปลี่ยน IP ตรงนี้
         .then(res => res.json())
         .then(data => {
           const table = document.getElementById('result');
